@@ -1,12 +1,15 @@
 const express = require("express");
 const morgan = require('morgan')
-const tourRouter = require('./dev-data/Routes/tourRoutes');
-const userRouter = require('./dev-data/Routes/userRoutes')
+const tourRouter = require('./Routes/tourRoutes');
+const userRouter = require('./Routes/userRoutes')
 const app = express();
 
 
 // 1> middleware
-app.use(morgan('dev'))
+if(process.env.NODE_ENV === 'development'){
+    app.use(morgan('dev'))
+
+}
 
 app.use(express.json());
 
