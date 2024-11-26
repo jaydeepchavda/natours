@@ -30,6 +30,13 @@ const { error } = require('console');
 //     next();
 // }
 
+// top-5-cheap route handles logic
+exports.aliasTopTours = (req, res, next) =>{
+    req.query.limit='5';
+    req.query.sort = '-ratingAverage,price';
+    req.query.fields = 'name,price,ratingAverage,summary,difficulty';
+    next();
+}
 
 // route handlers
 exports.getAllTours = async (req,res) => {
