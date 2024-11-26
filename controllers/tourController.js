@@ -1,6 +1,7 @@
 const fs = require('fs');
 const Tour = require('../models/tourModel');
 const { error } = require('console');
+const { Query } = require('mongoose');
 
 // reading file sync
 
@@ -38,6 +39,37 @@ exports.aliasTopTours = (req, res, next) =>{
     next();
 }
 
+class APIFeatures {
+    constructor(query, queryString){
+        this.query = query;
+        this.queryString = queryString;
+    }
+    filter(){
+        const queryObj = {...this.queryString};
+        const excludedFields = ['page', 'sort','limit','fields'];
+        excludedFields.forEach(el => delete queryObj[el]);
+
+
+        // 1B> Advance filtering
+        let queryStr = JSON.stringify(queryObj);
+        // Replace keywords like gte, gt, lte, lt with their MongoDB equivalents
+        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+
+
+        this.query.find(JSON.parse(queryStr));
+        return this;
+    }
+    sort(){
+        if(this.queryString.sort){
+            const sortBy = this.queryString.sort.split(',').join(' ');
+            this.query = this.query.sort(sortBy);
+        } else{
+            this.query = this.query.sort('-createdAt')
+        }
+        return this;
+    }
+}
+
 // route handlers
 exports.getAllTours = async (req,res) => {
     try {
@@ -45,25 +77,25 @@ exports.getAllTours = async (req,res) => {
 
         // BUILD QUERY 
         // 1 A> filtering
-        const queryObj = {...req.query};
-        const excludedFields = ['page', 'sort','limit','fields'];
-        excludedFields.forEach(el => delete queryObj[el]);
+        // const queryObj = {...req.query};
+        // const excludedFields = ['page', 'sort','limit','fields'];
+        // excludedFields.forEach(el => delete queryObj[el]);
 
 
-        // 1 B> Advance filtering
-        let queryStr = JSON.stringify(queryObj);
-        // Replace keywords like gte, gt, lte, lt with their MongoDB equivalents
-        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+        // // 1 B> Advance filtering
+        // let queryStr = JSON.stringify(queryObj);
+        // // Replace keywords like gte, gt, lte, lt with their MongoDB equivalents
+        // queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
 
-        let query = Tour.find(JSON.parse(queryStr));
+        // let query = Tour.find(JSON.parse(queryStr));
 
         // 2> Sorting
-        if(req.query.sort){
-            const sortBy = req.query.sort.split(',').join(' ');
-            query = query.sort(sortBy);
-        } else{
-            query = query.sort('-createdAt')
-        }
+        // if(req.query.sort){
+        //     const sortBy = req.query.sort.split(',').join(' ');
+        //     query = query.sort(sortBy);
+        // } else{
+        //     query = query.sort('-createdAt')
+        // }
         
         // 3> field limiting 
         if (req.query.fields){
@@ -88,7 +120,10 @@ exports.getAllTours = async (req,res) => {
         }
 
         // EXUCUTE QUERY
-        const tours = await query;
+        const features = new APIFeatures(Tour.find(),req.query).filter().sort();
+        const tours = await features.query;
+
+        // const tours = await query;
 
         // SEND RESPONSE
         res.status(200).send({
