@@ -1,5 +1,6 @@
 const fs = require('fs');
-const Tour = require('../models/tourModel')
+const Tour = require('../models/tourModel');
+const { error } = require('console');
 
 // reading file sync
 
@@ -32,15 +33,64 @@ const Tour = require('../models/tourModel')
 
 // route handlers
 exports.getAllTours = async (req,res) => {
-    try{
-    const tours = await Tour.find();
-    res.status(200).send({
-        status:'success',
-        results:tours.length,
-        data:{
-            tours
+    try {
+        console.log(req.query);
+
+        // BUILD QUERY 
+        // 1 A> filtering
+        const queryObj = {...req.query};
+        const excludedFields = ['page', 'sort','limit','fields'];
+        excludedFields.forEach(el => delete queryObj[el]);
+
+
+        // 1 B> Advance filtering
+        let queryStr = JSON.stringify(queryObj);
+        // Replace keywords like gte, gt, lte, lt with their MongoDB equivalents
+        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+
+        let query = Tour.find(JSON.parse(queryStr));
+
+        // 2> Sorting
+        if(req.query.sort){
+            const sortBy = req.query.sort.split(',').join(' ');
+            query = query.sort(sortBy);
+        } else{
+            query = query.sort('-createdAt')
         }
-    })
+        
+        // 3> field limiting 
+        if (req.query.fields){
+            const fields = req.query.fields.split(',').join(' ');
+            console.log(fields);
+            query = query.select(fields);
+        } else {
+            query = query.select('-__v');
+        }
+
+
+        // 4> pagination
+        const page = req.query.page * 1 || 1;
+        const limit = req.query.limit * 1 || 10;
+        const skip = (page - 1) * limit;
+        
+        query = query.skip(skip).limit(limit);
+
+        if(req.query.page){
+            const numTours = await Tour.countDocuments();
+            if ( skip >= numTours ) throw new Error('This page does not exits');
+        }
+
+        // EXUCUTE QUERY
+        const tours = await query;
+
+        // SEND RESPONSE
+        res.status(200).send({
+            status:'success',
+            results:tours.length,
+            data:{
+                tours
+            }
+        })
         
     }
     catch (err){
@@ -57,7 +107,7 @@ exports.getTour = async (req,res) => {
     // console.log(req.params);
     try{
         const tour = await Tour.findById(req.params.id);
-    res.status(200).send({
+        res.status(200).send({
         status:"success",
         data:{
             tours: tour
@@ -89,7 +139,7 @@ exports.createTour = async (req,res)=>{
         console.log(err); // Add this to debug
         res.status(400).json({
             status:"fail",
-            message:"invalid data sent!" 
+            message: err 
         })
     }
     
