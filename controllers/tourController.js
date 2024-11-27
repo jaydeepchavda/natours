@@ -1,8 +1,5 @@
-const fs = require('fs');
 const Tour = require('../models/tourModel');
-const { error } = require('console');
-const { Query } = require('mongoose');
-
+const APIFeatures = require('./../utils/apiFeatures');
 // reading file sync
 
 
@@ -39,36 +36,7 @@ exports.aliasTopTours = (req, res, next) =>{
     next();
 }
 
-class APIFeatures {
-    constructor(query, queryString){
-        this.query = query;
-        this.queryString = queryString;
-    }
-    filter(){
-        const queryObj = {...this.queryString};
-        const excludedFields = ['page', 'sort','limit','fields'];
-        excludedFields.forEach(el => delete queryObj[el]);
 
-
-        // 1B> Advance filtering
-        let queryStr = JSON.stringify(queryObj);
-        // Replace keywords like gte, gt, lte, lt with their MongoDB equivalents
-        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
-
-
-        this.query.find(JSON.parse(queryStr));
-        return this;
-    }
-    sort(){
-        if(this.queryString.sort){
-            const sortBy = this.queryString.sort.split(',').join(' ');
-            this.query = this.query.sort(sortBy);
-        } else{
-            this.query = this.query.sort('-createdAt')
-        }
-        return this;
-    }
-}
 
 // route handlers
 exports.getAllTours = async (req,res) => {
@@ -98,29 +66,29 @@ exports.getAllTours = async (req,res) => {
         // }
         
         // 3> field limiting 
-        if (req.query.fields){
-            const fields = req.query.fields.split(',').join(' ');
-            console.log(fields);
-            query = query.select(fields);
-        } else {
-            query = query.select('-__v');
-        }
+        // if (req.query.fields){
+        //     const fields = req.query.fields.split(',').join(' ');
+        //     console.log(fields);
+        //     query = query.select(fields);
+        // } else {
+        //     query = query.select('-__v');
+        // }
 
 
         // 4> pagination
-        const page = req.query.page * 1 || 1;
-        const limit = req.query.limit * 1 || 10;
-        const skip = (page - 1) * limit;
+        // const page = req.query.page * 1 || 1;
+        // const limit = req.query.limit * 1 || 10;
+        // const skip = (page - 1) * limit;
         
-        query = query.skip(skip).limit(limit);
+        // query = query.skip(skip).limit(limit);
 
-        if(req.query.page){
-            const numTours = await Tour.countDocuments();
-            if ( skip >= numTours ) throw new Error('This page does not exits');
-        }
+        // if(req.query.page){
+        //     const numTours = await Tour.countDocuments();
+        //     if ( skip >= numTours ) throw new Error('This page does not exits');
+        // }
 
         // EXUCUTE QUERY
-        const features = new APIFeatures(Tour.find(),req.query).filter().sort();
+        const features = new APIFeatures(Tour.find(),req.query).filter().sort().limitFields().paginate();
         const tours = await features.query;
 
         // const tours = await query;
@@ -145,6 +113,36 @@ exports.getAllTours = async (req,res) => {
    
 }
 
+exports.getTourStats = async (req, res) => {
+    try{
+
+        const stats = await Tour.aggregate([
+            {
+                $match : { ratingAverage : { $gte : 4.5 } }
+            },
+            {
+                $group :{
+                    _id : null,
+                    avgRating: { $avg : '$ratingsAverage'},
+                    avgPrice : { $avg : '$price'},
+                    minPrice : { $min : '$price'},
+                    maxPrice : { $max : '$price'}
+                }
+            }
+        ])
+        res.status(200).send({
+            status:"success",
+            data:{
+                 stats
+            }
+        })
+    }catch (err) {
+        res.status(404).json({
+            status:"fail",
+            message: err
+        })
+    }
+}
 exports.getTour = async (req,res) => {
     // console.log(req.params);
     try{
