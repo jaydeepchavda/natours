@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "start:prod":"NODE_ENV=production nodemon server.js",
+    "debug": "ndb server.js"
   },
   "author": "jaydip chavda",
   "license": "ISC",
@@ -14,6 +16,7 @@
     "express": "^4.21.1",
     "mongoose": "^5.13.22",
     "morgan": "^1.10.0",
+    "ndb": "^1.1.5",
     "slugify": "^1.6.6"
   },
   "engines": {
