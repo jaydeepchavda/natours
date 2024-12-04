@@ -61,13 +61,18 @@ exports.protect = catchAsync(async (req, res, next) => {
     // 2> varification token
     const decoded = await promisify(JWT.verify)(token, process.env.JWT_SECRET);
     // 3> check if user still exist
-    const freshUser = await User.findById(decoded.id);
+    const currentUser = await User.findById(decoded.id);
 
-    if(!freshUser){
+    if(!currentUser){
         return next(new appError('The user belonging to this token does no longer exits',401));
     }
     // 4> check if user changed password after token was issued right
-    changedPasswordAfter(decoded.iat);
+    if(currentUser.changedPasswordAfter(decoded.iat)){
+        return next(new appError('user recently changed password! please log in again. ', 401) )
+    }
+
+    // grant access to protected route
+    req.user = currentUser
     next();
 
 })
