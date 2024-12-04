@@ -1,3 +1,4 @@
+const { promisify } = require('util');
 const JWT = require('jsonwebtoken');
 const User  = require('./../models/userModel')
 const catchAsync = require('./../utils/catchAsync');
@@ -58,11 +59,15 @@ exports.protect = catchAsync(async (req, res, next) => {
     }
 
     // 2> varification token
-
+    const decoded = await promisify(JWT.verify)(token, process.env.JWT_SECRET);
     // 3> check if user still exist
+    const freshUser = await User.findById(decoded.id);
 
-    // 4> check if user changed password after token was issued
-    
+    if(!freshUser){
+        return next(new appError('The user belonging to this token does no longer exits',401));
+    }
+    // 4> check if user changed password after token was issued right
+    changedPasswordAfter(decoded.iat);
     next();
 
 })
