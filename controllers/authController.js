@@ -64,7 +64,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     const currentUser = await User.findById(decoded.id);
 
     if(!currentUser){
-        return next(new appError('The user belonging to this token does no longer exits',401));
+        return next(new appError('The user belonging to this token does no longer does  exits',401));
     }
     // 4> check if user changed password after token was issued right
     if(currentUser.changedPasswordAfter(decoded.iat)){
