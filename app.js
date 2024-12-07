@@ -7,6 +7,25 @@ const userRouter = require('./Routes/userRoutes')
 const app = express();
 
 
+// - 200 OK: Request succeeded
+// - 201 Created: Resource created
+// - 202 Accepted: Accepted request
+// - 204 No Content: Accepted request
+// - 301 Moved Permanently: Accepted request
+// - 302 Found: Temporarily moved
+// - 304 Not Modified: Not modified
+// - 400 Bad Request: Bad request error
+// - 401 Unauthorized: Needs authentication
+// - 403 Forbidden: Access Forbidden
+// - 404 Not Found: Resource Not Found
+// - 405 Not Allowed: Method not allowed
+// - 408 Request Timeout: Request timed out
+// - 500 Internal Server Error: Server error
+// - 501 Not Implemented: Not implemented
+// - 502 Bad Gateway: Bad gateway error
+// - 503 Service Unavailable: Service unavailable
+// - 504 Gateway Timeout: Gateway Timeout
+
 // 1> middleware
 if(process.env.NODE_ENV === 'development'){
     app.use(morgan('dev'))
