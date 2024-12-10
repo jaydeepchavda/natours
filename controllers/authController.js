@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const JWT = require('jsonwebtoken');
 const User  = require('./../models/userModel')
 const catchAsync = require('./../utils/catchAsync');
-const appError = require('./../utils/appError');
+const AppError = require('./../utils/appError');
 const sendEmail = require('./../utils/email');
 
 const { token } = require('morgan');
@@ -53,13 +53,13 @@ exports.login = catchAsync(async (req, res, next) => {
 
     // 1> check if email and password are exist
     if(!email || !password){
-      return next(new appError("Please provide email and password ", 400));
+      return next(new AppError("Please provide email and password ", 400));
     }
     // 2> check if user exits and password is correct
     const user = await User.findOne({email}).select('+password')
  
     if(!user || !await user.correctPassword(password, user.password)){
-        return next(new appError('Incorrect email or password', 401));
+        return next(new AppError('Incorrect email or password', 401));
     }    
 
     // 3> if everything ok send token to client
@@ -82,7 +82,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     // console.log('Headers:', req.headers);
     // console.log('Token:', token);
     if (!token) {
-        return next(new appError('You are not logged in! Please log in to get access.', 401));
+        return next(new AppError('You are not logged in! Please log in to get access.', 401));
     }
 
     // 2> varification token
@@ -91,11 +91,11 @@ exports.protect = catchAsync(async (req, res, next) => {
     const currentUser = await User.findById(decoded.id);
 
     if(!currentUser){
-        return next(new appError('The user belonging to this token does no longer does  exits',401));
+        return next(new AppError('The user belonging to this token does no longer does  exits',401));
     }
     // 4> check if user changed password after token was issued right
     if(currentUser.changedPasswordAfter(decoded.iat)){
-        return next(new appError('user recently changed password! please log in again. ', 401) )
+        return next(new AppError('user recently changed password! please log in again. ', 401) )
     }
 
     // grant access to protected route
@@ -108,7 +108,7 @@ exports.restrtictTo = (...roles) => {
     // roles ['admin','led-guide'].  role = 'user'
     return(req,res,next) =>{
         if(!roles.includes(req.user.role)){
-            return next(new appError("you do not have persmission to perform this action",403));
+            return next(new AppError("you do not have persmission to perform this action",403));
         }
         next();
     }
@@ -119,7 +119,7 @@ exports.forgotPassword = catchAsync( async (req,res,next) =>{
     // 1>get user based on posted email
     const user = await User.findOne({ email : req.body.email});
     if(!user){
-        return next(new  appError("there is no user with this email address.", 404) );
+        return next(new  AppError("there is no user with this email address.", 404) );
     }
 
     // 2>generate random reset token
@@ -147,7 +147,7 @@ exports.forgotPassword = catchAsync( async (req,res,next) =>{
         user.passwordResetExpires = undefined; 
         await user.save({validateBeforeSave: false });
 
-        return next(new appError('There was an error sending  the email. try again later!'), 500)
+        return next(new AppError('There was an error sending  the email. try again later!'), 500)
     }
     
 });
@@ -160,7 +160,7 @@ exports.resetPassword = catchAsync(async (req,res,next) => {
     const user = await User.findOne({ passwordResetToken:hashedToken,passwordResetExpires: { $gt : Date.now()} } )
     // 2> if taken has not expires, and there is user, set the new password
     if(!user){
-        return next(new appError('Token is invalid or has expired', 400))
+        return next(new AppError('Token is invalid or has expired', 400))
     }
 
     user.password = req.body.password;
@@ -187,7 +187,7 @@ exports.updatePassword =catchAsync(async (req,res,next) => {
 
     // 2> Check if POSTed current password is correct
     if(!(await user.correctPassword(req.body.passwordCurrent, user.password) ) ){
-        return next(new appError('your current password is wrong. ',401))
+        return next(new AppError('your current password is wrong. ',401))
     }
 
 
