@@ -209,7 +209,7 @@ exports.updateTour = catchAsync(async (req , res, next) => {
 })
 
 
-exports.deleteOne = factory.deleteOne(Tour);
+exports.deleteTour = factory.deleteOne(Tour);
 
 // exports.deleteTour = catchAsync(async (req , res, next)=>{
 //         const tour = await Tour.findByIdAndDelete(req.params.id);
