@@ -12,7 +12,7 @@ const filterObj = (obj, ...allowedFields) => {
 }
 
 // route handlers
-exports.getAllUsers =catchAsync(async (req,res,next)=>{
+exports.getAllUsers = catchAsync(async (req,res,next)=>{
     const tours = await User.find();
 
     res.status(200).send({
