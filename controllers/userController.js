@@ -77,6 +77,8 @@ exports.updateUser = (req,res)=>{
         message:"This route is not yet defined! ..👍"
     })
 }
+// issue solved in user controller
+
 
 // exports.deleteUser = (req,res)=>{
 //     res.status(500).json({
