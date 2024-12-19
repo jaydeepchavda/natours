@@ -79,6 +79,8 @@ exports.updateUser = (req,res)=>{
 }
 // issue solved in user controller
 
+// issue solved in user controller 19 - 12 - 2024
+
 
 // exports.deleteUser = (req,res)=>{
 //     res.status(500).json({
