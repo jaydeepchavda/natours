@@ -80,6 +80,7 @@ exports.updateUser = (req,res)=>{
 // issue solved in user controller
 
 // issue solved in user controller 19 - 12 - 2024
+// issue solved in user controller 20 12 
 
 
 // exports.deleteUser = (req,res)=>{
