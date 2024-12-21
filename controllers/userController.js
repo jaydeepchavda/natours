@@ -77,6 +77,8 @@ exports.updateUser = (req,res)=>{
         message:"This route is not yet defined! ..👍"
     })
 }
+
+// issue solved inuser controller 21 12 
 // issue solved in user controller
 
 // issue solved in user controller 19 - 12 - 2024
