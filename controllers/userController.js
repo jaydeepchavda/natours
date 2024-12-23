@@ -71,12 +71,12 @@ exports.createUser = (req,res)=>{
     })
 }
 
-exports.updateUser = (req,res)=>{
-    res.status(500).json({
-        status:"error",
-        message:"This route is not yet defined! ..👍"
-    })
-}
+// exports.updateUser = (req,res)=>{
+//     res.status(500).json({
+//         status:"error",
+//         message:"This route is not yet defined! ..👍"
+//     })
+// }
 
 // issue solved inuser controller 21 12 
 // issue solved in user controller
@@ -92,5 +92,5 @@ exports.updateUser = (req,res)=>{
 //     })
 // }
 
-
+exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User)

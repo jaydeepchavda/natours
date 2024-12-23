@@ -180,36 +180,34 @@ exports.getTour = catchAsync(async (req,res,next) => {
 
 
 
-exports.createTour = catchAsync(async (req,res,next)=>{
-    const newTour = await Tour.create(req.body)
+// exports.createTour = catchAsync(async (req,res,next)=>{
+//     const newTour = await Tour.create(req.body)
 
-        res.status(201).json({
-            status:"success",
-            data:{
-                tour:newTour
-            }
-        })
-})
+//         res.status(201).json({
+//             status:"success",
+//             data:{
+//                 tour:newTour
+//             }
+//         })
+// })
 
-exports.updateTour = catchAsync(async (req , res, next) => {
-        const tour = await Tour.findByIdAndUpdate(req.params.id, req.body , {
-            new:true,
-            runValidators:true
-        });
-        if(!tour){
-            return next(new AppError("No tour found with that ID..."),404)
-        }
+// exports.updateTour = catchAsync(async (req , res, next) => {
+//         const tour = await Tour.findByIdAndUpdate(req.params.id, req.body , {
+//             new:true,
+//             runValidators:true
+//         });
+//         if(!tour){
+//             return next(new AppError("No tour found with that ID..."),404)
+//         }
 
-        res.status(200).json({
-            status:"success",
-            data:{
-                tour
-            }
-        });  
-})
+//         res.status(200).json({
+//             status:"success",
+//             data:{
+//                 tour
+//             }
+//         });  
+// })
 
-
-exports.deleteTour = factory.deleteOne(Tour);
 
 // exports.deleteTour = catchAsync(async (req , res, next)=>{
 //         const tour = await Tour.findByIdAndDelete(req.params.id);
@@ -223,6 +221,12 @@ exports.deleteTour = factory.deleteOne(Tour);
 //             data:null
 //         })  
 // })
+
+// factory function
+exports.createTour = factory.createOne(Tour);
+exports.updateTour = factory.updateOne(Tour);
+exports.deleteTour = factory.deleteOne(Tour);
+
 
 
 exports.getMonthlyPlan = catchAsync(async (req, res,next) =>{
