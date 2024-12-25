@@ -12,6 +12,7 @@ const filterObj = (obj, ...allowedFields) => {
     return newObj;
 }
 
+
 // route handlers
 // exports.getAllUsers = catchAsync(async (req,res,next)=>{
 //     const tours = await User.find();
@@ -25,6 +26,10 @@ const filterObj = (obj, ...allowedFields) => {
 //     })
 // });
 
+exports.getMe = (req,res,next) =>{
+    req.params.id = req.user.id;
+    next();
+}
 
 exports.updateMe =catchAsync(async(req,res,next) =>{
     // 1> create error is user posts password data
