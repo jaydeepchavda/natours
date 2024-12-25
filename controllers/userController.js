@@ -90,4 +90,4 @@ exports.createUser = (req,res)=>{
 // issue solved in factory function 
 
 exports.updateUser = factory.updateOne(User);
-exports.deleteUser = factory.deleteOne(User)
+exports.deleteUser = factory.deleteOne(User);
