@@ -13,17 +13,17 @@ const filterObj = (obj, ...allowedFields) => {
 }
 
 // route handlers
-exports.getAllUsers = catchAsync(async (req,res,next)=>{
-    const tours = await User.find();
+// exports.getAllUsers = catchAsync(async (req,res,next)=>{
+//     const tours = await User.find();
 
-    res.status(200).send({
-        status:'success',
-        results:tours.length,
-        data:{
-            tours
-        }
-    })
-});
+//     res.status(200).send({
+//         status:'success',
+//         results:tours.length,
+//         data:{
+//             tours
+//         }
+//     })
+// });
 
 
 exports.updateMe =catchAsync(async(req,res,next) =>{
@@ -57,17 +57,17 @@ exports.deleteMe = catchAsync(async (req,res,next) => {
     })
 })
 
-exports.getUser = (req,res)=>{
-    res.status(500).json({
-        status:"error",
-        message:"This route is not yet defined! ..👍"
-    })
-}
+// exports.getUser = (req,res)=>{
+//     res.status(500).json({
+//         status:"error",
+//         message:"This route is not yet defined! ..👍"
+//     })
+// }
 
 exports.createUser = (req,res)=>{
     res.status(500).json({
         status:"error",
-        message:"This route is not yet defined! ..👍"
+        message:"This route is not defined! Please use /signup instead  ..👍"
     })
 }
 
@@ -88,6 +88,7 @@ exports.createUser = (req,res)=>{
 // }
 
 // issue solved in factory function 
-
+exports.getUser = factory.getOne(User); 
+exports.getAllUsers = factory.getAll(User);
 exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);

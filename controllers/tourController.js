@@ -1,5 +1,5 @@
 const Tour = require('../models/tourModel');
-const APIFeatures = require('./../utils/apiFeatures');
+// const APIFeatures = require('./../utils/apiFeatures');
 
 const catchAsync = require('./../utils/catchAsync')
 const AppError = require('./../utils/appError')
@@ -43,20 +43,22 @@ exports.aliasTopTours = (req, res, next) =>{
 
 // route handlers
 
-exports.getAllTours = catchAsync(async (req,res,next) => {
+// exports.getAllTours = catchAsync(async (req,res,next) => {
 
-        // EXUCUTE QUERY
-        const features = new APIFeatures(Tour.find(),req.query || {}).filter().sort().limitFields().paginate();
-        const tours = await features.query;
+//         // EXUCUTE QUERY
+//         const features = new APIFeatures(Tour.find(),req.query || {}).filter().sort().limitFields().paginate();
+//         const tours = await features.query;
 
-        res.status(200).send({
-            status:'success',
-            results:tours.length,
-            data:{
-                tours
-            }
-        })
-})
+//         res.status(200).send({
+//             status:'success',
+//             results:tours.length,
+//             data:{
+//                 tours
+//             }
+//         })
+// })
+
+exports.getAllTours = factory.getAll(Tour);
 
 // exports.getAllTours = async (req,res) => {
 //     try {
