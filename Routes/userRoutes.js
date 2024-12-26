@@ -29,7 +29,6 @@ router
     .patch(userController.updateUser)
     .delete(userController.deleteUser);
 
-    // issue solve in router page on 17 12 2024 
 
 module.exports = router;
 

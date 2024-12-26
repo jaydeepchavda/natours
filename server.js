@@ -26,7 +26,6 @@ const server = app.listen(port, ()=>{
     console.log(`app running on port no ${port}.....`)
 })
 
-//changes made on 16-dec 2024
 
 process.on('unhandledRejection', err => {
     console.log(err.name , err.message); 

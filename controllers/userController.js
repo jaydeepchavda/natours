@@ -12,19 +12,7 @@ const filterObj = (obj, ...allowedFields) => {
     return newObj;
 }
 
-
 // route handlers
-// exports.getAllUsers = catchAsync(async (req,res,next)=>{
-//     const tours = await User.find();
-
-//     res.status(200).send({
-//         status:'success',
-//         results:tours.length,
-//         data:{
-//             tours
-//         }
-//     })
-// });
 
 exports.getMe = (req,res,next) =>{
     req.params.id = req.user.id;
@@ -53,6 +41,7 @@ exports.updateMe =catchAsync(async(req,res,next) =>{
         }
     });
 });
+
 exports.deleteMe = catchAsync(async (req,res,next) => {
     await User.findByIdAndUpdate(req.body.id,  { active : false } );
 
@@ -62,12 +51,7 @@ exports.deleteMe = catchAsync(async (req,res,next) => {
     })
 })
 
-// exports.getUser = (req,res)=>{
-//     res.status(500).json({
-//         status:"error",
-//         message:"This route is not yet defined! ..👍"
-//     })
-// }
+
 
 exports.createUser = (req,res)=>{
     res.status(500).json({
@@ -76,6 +60,30 @@ exports.createUser = (req,res)=>{
     })
 }
 
+exports.getUser = factory.getOne(User); 
+exports.getAllUsers = factory.getAll(User);
+exports.updateUser = factory.updateOne(User);
+exports.deleteUser = factory.deleteOne(User);
+
+// exports.getAllUsers = catchAsync(async (req,res,next)=>{
+//     const tours = await User.find();
+
+//     res.status(200).send({
+//         status:'success',
+//         results:tours.length,
+//         data:{
+//             tours
+//         }
+//     })
+// });
+
+// exports.getUser = (req,res)=>{
+//     res.status(500).json({
+//         status:"error",
+//         message:"This route is not yet defined! ..👍"
+//     })
+// }
+
 // exports.updateUser = (req,res)=>{
 //     res.status(500).json({
 //         status:"error",
@@ -83,17 +91,9 @@ exports.createUser = (req,res)=>{
 //     })
 // }
  
-
-
 // exports.deleteUser = (req,res)=>{
 //     res.status(500).json({
 //         status:"error",
 //         message:"This route is not yet defined! ..👍"
 //     })
 // }
-
-// issue solved in factory function 
-exports.getUser = factory.getOne(User); 
-exports.getAllUsers = factory.getAll(User);
-exports.updateUser = factory.updateOne(User);
-exports.deleteUser = factory.deleteOne(User);
