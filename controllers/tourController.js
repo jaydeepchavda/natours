@@ -99,6 +99,8 @@ exports.getMonthlyPlan = catchAsync(async (req, res,next) =>{
         });
 })
 
+// issue solved in tour controller 1-1-2025
+
 // exports.checkID =(req,res,next,val)=>{
 //     console.log(`Tour id is : ${val}`);
 //     if(req.params.id * 1 > tours.length-1){
