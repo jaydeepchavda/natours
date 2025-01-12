@@ -11,7 +11,6 @@ router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
 // protect all routes after this middleware
-// issue solved in 
 // issue solved 
 router.use(authController.protect);
 
