@@ -42,7 +42,7 @@ router
         authController.protect, 
         authController.restrtictTo('admin','lead-guide'), 
         tourController.deleteTour);
-
+// issue solved 
 // router
 //     .route('/:tourId/reviews')
 //     .post(
