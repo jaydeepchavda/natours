@@ -3,7 +3,6 @@ const tourController = require('../controllers/tourController');
 const authController = require('./../controllers/authController');
 const reviewRouter = require('./reviewRoutes');
 
-// issue 
 const router = express.Router();
 
 // router.param('id', tourController.checkID)
